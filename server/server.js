@@ -10,6 +10,8 @@ const server = express();
 const port = 5000;
 // Import the ToDos route.
 const todos = require("./routes/todos");
+// Import the Auth route.
+const auth = require("./routes/auth");
 
 // Create a default GET
 server.get("/", (req, res) => {
@@ -35,6 +37,8 @@ server.use(session(sessionConfig));
 server.use(express.json());
 // Bring in the ToDos.
 server.use("/todos", todos);
+// Sessions Playground.
+server.use("/auth", auth);
 
 // Make the server listen to this port.
 server.listen(port, () => {
