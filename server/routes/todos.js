@@ -8,36 +8,41 @@ const ToDos = [
     User: "Praveen",
     Item: "Coding",
     CreatedAt: Date.now(),
-    UpdatedAt: Date.now()
+    UpdatedAt: Date.now(),
+    Private: false
   },
   {
     User: "Tabaswini",
     Item: "Running",
     CreatedAt: Date.now(),
-    UpdatedAt: Date.now()
+    UpdatedAt: Date.now(),
+    Private: true
   },
   {
     User: "Akansha",
     Item: "Reading",
     CreatedAt: Date.now(),
-    UpdatedAt: Date.now()
+    UpdatedAt: Date.now(),
+    Private: false
   },
   {
     User: "Praveen",
     Item: "Cooking",
     CreatedAt: Date.now(),
-    UpdatedAt: Date.now()
+    UpdatedAt: Date.now(),
+    Private: true
   },
   {
     User: "Tabaswini",
     Item: "Journalling",
     CreatedAt: Date.now(),
-    UpdatedAt: Date.now()
+    UpdatedAt: Date.now(),
+    Private: false
   }
 ];
 // Get Everything.
 todos.get("/", (req, res) => {
-  res.json(ToDos);
+  res.json(ToDos.filter(todo => !todo.Private));
 });
 // Get Something Specific.
 todos.get("/:id", (req, res) => {
