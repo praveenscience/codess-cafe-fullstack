@@ -63,12 +63,26 @@ todos.get("/:id", (req, res) => {
   }
 });
 // Create a new Record
-todos.post("/todos", (req, res) => {
-  if (typeof req.body.Item === "undefined") {
-    res.status(406).json("Please send Item.");
+todos.post("/", (req, res) => {
+  const NoItem = typeof req.body.Item === "undefined";
+  const NotLoggedIn = !req.session.User;
+  if (NotLoggedIn) {
+    res.status(406).json("Please Login.");
   } else {
-    ToDos.push(req.body.Item);
-    res.status(201).json(ToDos.length - 1);
+    const User = req.session.User;
+    if (NoItem) {
+      res.status(406).json("Please send Item.");
+    } else {
+      const Item = req.body.Item;
+      ToDos.push({
+        User,
+        Item,
+        CreatedAt: Date.now(),
+        UpdatedAt: Date.now(),
+        Private: !!req.body.Private
+      });
+      res.status(201).json(ToDos.length - 1);
+    }
   }
 });
 // Editing a Record.
@@ -76,12 +90,17 @@ todos.put("/:id", (req, res) => {
   if (typeof ToDos[req.params.id] === "undefined") {
     res.status(404).json("Not Found");
   } else {
-    if (typeof req.body.Item === "undefined") {
-      res.status(400).json("You have to specify new value using Item.");
+    const ToDo = ToDos[req.params.id];
+    if (ToDo.User !== req.session.User) {
+      res.status(403).json("Please login and edit only your ToDos!");
     } else {
-      ToDos[req.params.id] = req.body.Item;
-      console.log(`Updated Record #${req.params.id} to ${req.body.Item}.`);
-      res.status(202).json(ToDos[req.params.id]);
+      if (typeof req.body.Item === "undefined") {
+        res.status(400).json("You have to specify new value using Item.");
+      } else {
+        ToDos[req.params.id].Item = req.body.Item;
+        ToDos[req.params.id].UpdatedAt = Date.now();
+        res.status(202).json(ToDos[req.params.id]);
+      }
     }
   }
 });
@@ -90,9 +109,14 @@ todos.delete("/:id", (req, res) => {
   if (typeof ToDos[req.params.id] === "undefined") {
     res.status(404).json("Not Found");
   } else {
-    ToDos[req.params.id] = undefined;
-    console.log(`Deleted Record #${req.params.id}.`);
-    res.status(204).end();
+    const ToDo = ToDos[req.params.id];
+    if (ToDo.User !== req.session.User) {
+      res.status(403).json("Please login and delete only your ToDos!");
+    } else {
+      ToDos[req.params.id] = undefined;
+      console.log(`Deleted Record #${req.params.id}.`);
+      res.status(204).end();
+    }
   }
 });
 
