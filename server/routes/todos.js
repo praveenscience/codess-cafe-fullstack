@@ -3,7 +3,38 @@ const express = require("express");
 // Create the ToDos route.
 const todos = express.Router();
 // Simple Sample Database
-const ToDos = ["Running", "Coding", "Reading", "Cooking", "Journalling"];
+const ToDos = [
+  {
+    User: "Praveen",
+    Item: "Coding",
+    CreatedAt: Date.now(),
+    UpdatedAt: Date.now()
+  },
+  {
+    User: "Tabaswini",
+    Item: "Running",
+    CreatedAt: Date.now(),
+    UpdatedAt: Date.now()
+  },
+  {
+    User: "Akansha",
+    Item: "Reading",
+    CreatedAt: Date.now(),
+    UpdatedAt: Date.now()
+  },
+  {
+    User: "Praveen",
+    Item: "Cooking",
+    CreatedAt: Date.now(),
+    UpdatedAt: Date.now()
+  },
+  {
+    User: "Tabaswini",
+    Item: "Journalling",
+    CreatedAt: Date.now(),
+    UpdatedAt: Date.now()
+  }
+];
 // Get Everything.
 todos.get("/", (req, res) => {
   res.json(ToDos);
