@@ -42,14 +42,24 @@ const ToDos = [
 ];
 // Get Everything.
 todos.get("/", (req, res) => {
-  res.json(ToDos.filter(todo => !todo.Private));
+  res.json(
+    ToDos.filter(todo => !todo.Private || todo.User === req.session.User)
+  );
 });
 // Get Something Specific.
 todos.get("/:id", (req, res) => {
   if (typeof ToDos[req.params.id] === "undefined") {
     res.status(404).json("Not Found");
   } else {
-    res.json(ToDos[req.params.id]);
+    const ToDo = ToDos[req.params.id];
+    if (
+      (ToDo.Private === true && ToDo.User === req.session.User) ||
+      !ToDo.Private
+    ) {
+      res.json(ToDos[req.params.id]);
+    } else {
+      res.status(401).json("(private ToDo)");
+    }
   }
 });
 // Create a new Record
